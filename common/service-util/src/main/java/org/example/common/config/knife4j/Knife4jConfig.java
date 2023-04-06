@@ -1,4 +1,4 @@
-package knife4j;
+package org.example.common.config.knife4j;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

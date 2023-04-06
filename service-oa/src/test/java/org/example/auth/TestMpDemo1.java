@@ -1,6 +1,6 @@
-package auth;
+package org.example.auth;
 
-import auth.mapper.SysRoleMapper;
+import org.example.auth.mapper.SysRoleMapper;
 import com.atguigu.model.system.SysRole;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
