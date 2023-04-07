@@ -12,6 +12,6 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public Result error(Exception e){
         e.printStackTrace();
-        return Result.fail().message("全局异常处理");
+        return Result.fail().message(e.toString());
     }
 }
