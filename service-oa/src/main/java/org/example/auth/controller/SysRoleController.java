@@ -1,6 +1,7 @@
 package org.example.auth.controller;
 
 import com.atguigu.vo.system.SysRoleQueryVo;
+import com.atguigu.vo.system.AssginRoleVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import result.Result;
 
 import java.util.List;
+import java.util.Map;
 
 @Api(tags = "角色管理接口")
 @RestController
@@ -24,6 +26,20 @@ public class SysRoleController {
     @Autowired
     @Qualifier(value = "sysRoleServiceImpl")
     private SysRoleService sysRoleService;
+
+    @ApiOperation(value = "获取角色")
+    @GetMapping("/toAssign/{userId}")
+    public Result toAssign(@PathVariable long userId) {
+        Map<String, Object> roleMap = sysRoleService.findRoleByAdminId(userId);
+        return Result.ok(roleMap);
+    }
+
+    @ApiOperation(value = "给用户分配角色")
+    @PostMapping("/assign")
+    public Result assign(@RequestBody AssginRoleVo assginRoleVo){
+        sysRoleService.assign(assginRoleVo);
+        return Result.ok();
+    }
 
     //查
     @ApiOperation("查询所有角色")
@@ -43,7 +59,7 @@ public class SysRoleController {
         LambdaQueryWrapper<SysRole> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         String roleName = sysRoleQueryVo.getRoleName();
         if(!StringUtils.isEmpty(roleName)){
-            lambdaQueryWrapper.like(SysRole::getRoleName,roleName);
+            lambdaQueryWrapper.like(SysRole::getRoleName,roleName).or().like(SysRole::getRoleCode,roleName);
         }
 
         IPage iPage = sysRoleService.page(pageParam,lambdaQueryWrapper);

@@ -18,4 +18,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
 
+    @Override
+    public void updateStatus(Long id, Integer status) {
+        SysUser user =  baseMapper.selectById(id);
+        user.setStatus(status);
+        baseMapper.updateById(user);
+    }
 }

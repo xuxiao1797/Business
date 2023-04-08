@@ -42,12 +42,14 @@ public class SysUserController {
         Page<SysUser> pageParam = new Page<>(page,limit);
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper();
 
-        String username = sysUserQueryVo.getKeyword();
+        String keyword = sysUserQueryVo.getKeyword();
         String timeBegin = sysUserQueryVo.getCreateTimeBegin();
         String timeEnd = sysUserQueryVo.getCreateTimeEnd();
 
-        if(!StringUtils.isEmpty(username)){
-            queryWrapper.like(SysUser::getUsername,username);
+        if(!StringUtils.isEmpty(keyword)){
+            queryWrapper.like(SysUser::getUsername,keyword)
+                    .or().like(SysUser::getName,keyword)
+                    .or().like(SysUser::getPhone,keyword);
         }
         //ge 大于等于
         if(!StringUtils.isEmpty(timeBegin)){
@@ -90,6 +92,13 @@ public class SysUserController {
     @DeleteMapping("remove/{id}")
     public Result remove(@PathVariable Long id) {
         service.removeById(id);
+        return Result.ok();
+    }
+
+    @ApiOperation(value = "更新状态")
+    @GetMapping("updateStatus/{id}/{status}")
+    public Result updateStatus(@PathVariable Long id, @PathVariable Integer status) {
+        service.updateStatus(id, status);
         return Result.ok();
     }
 }

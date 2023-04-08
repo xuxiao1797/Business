@@ -9,7 +9,7 @@
               <el-input
                 style="width: 100%"
                 v-model="search.roleName"
-                placeholder="角色名称"
+                placeholder="角色名称/角色编码"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -59,6 +59,13 @@
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
           <el-button
+            type="warning"
+            icon="el-icon-baseball"
+            size="mini"
+            @click="showAssignAuth(scope.row)"
+            title="分配权限"
+          />
+          <el-button
             type="primary"
             icon="el-icon-edit"
             size="mini"
@@ -81,9 +88,11 @@
       :current-page="page"
       :total="total"
       :page-size="limit"
+      :page-sizes="[5, 10, 20, 30, 40, 50, 100]"
       style="padding: 30px 0; text-align: center"
-      layout="total, prev, pager, next, jumper"
+      layout="sizes, prev, pager, next, jumper, ->, total, slot"
       @current-change="fetchData"
+      @size-change="changeSize"
     />
 
     <el-dialog title="添加/修改" :visible.sync="dialogVisible" width="40%">
@@ -143,6 +152,11 @@ export default {
     this.fetchData();
   },
   methods: {
+    changeSize(size) {
+      console.log(size);
+      this.limit = size;
+      this.fetchData(1);
+    },
     handleSelectionChange(selection) {
       this.selected = selection;
       console.log(this.selected);
@@ -223,6 +237,16 @@ export default {
           this.fetchData();
           this.$message.success("删除成功");
         });
+    },
+    resetData() {
+      console.log("重置查询表单");
+      this.search = {};
+      this.fetchData();
+    },
+    showAssignAuth(row) {
+      this.$router.push(
+        "/system/assignAuth?id=" + row.id + "&roleName=" + row.roleName
+      );
     },
   },
 };
