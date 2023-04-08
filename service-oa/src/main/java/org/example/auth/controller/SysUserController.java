@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import result.Result;
+import utils.MD5;
 
 /**
  * <p>
@@ -40,7 +41,7 @@ public class SysUserController {
                         SysUserQueryVo sysUserQueryVo){
 
         Page<SysUser> pageParam = new Page<>(page,limit);
-        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper();
+        LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
 
         String keyword = sysUserQueryVo.getKeyword();
         String timeBegin = sysUserQueryVo.getCreateTimeBegin();
@@ -77,6 +78,8 @@ public class SysUserController {
     @ApiOperation(value = "保存用户")
     @PostMapping("save")
     public Result save(@RequestBody SysUser user) {
+        String encrypt = MD5.encrypt(user.getPassword());
+        user.setPassword(encrypt);
         service.save(user);
         return Result.ok();
     }

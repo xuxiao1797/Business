@@ -4,6 +4,7 @@ package org.example.auth.service;
 import com.atguigu.model.system.SysMenu;
 import com.atguigu.model.wechat.Menu;
 import com.atguigu.vo.system.AssginMenuVo;
+import com.atguigu.vo.system.RouterVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -25,4 +26,8 @@ public interface SysMenuService extends IService<SysMenu> {
     List<SysMenu> findSysMenuByRoleId(Long roleId);
 
     void assign(AssginMenuVo assignMenuVo);
+
+    List<RouterVo> findMenuListById(Long userId);
+
+    List<String> findBtnListById(Long userId);
 }
