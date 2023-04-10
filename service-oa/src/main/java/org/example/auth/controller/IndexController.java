@@ -9,10 +9,7 @@ import jwt.JwtHelper;
 import org.example.auth.service.SysMenuService;
 import org.example.auth.service.SysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import result.Result;
 import utils.MD5;
 
@@ -33,7 +30,7 @@ public class IndexController {
     private SysMenuService sysMenuService;
 
     @PostMapping("/login")
-    public Result login(LoginVo loginVo){
+    public Result login(@RequestBody LoginVo loginVo){
 //        Map<String,Object> map = new HashMap<>();
 //        map.put("token","admin-token");
 //        return Result.ok(map);
@@ -42,7 +39,7 @@ public class IndexController {
         queryWrapper.eq(SysUser::getUsername,username);
         SysUser user =  sysUserService.getOne(queryWrapper);
         if(user == null){
-            throw new RuntimeException("用户名或密码错误");
+            throw new RuntimeException("用户名不存在");
         }
         String encrypt = user.getPassword();
         String inputPassword = MD5.encrypt(loginVo.getPassword());
@@ -65,7 +62,7 @@ public class IndexController {
     @GetMapping("/info")
     public Result info(HttpServletRequest request){
 
-        String token = request.getHeader("header");
+        String token = request.getHeader("token");
         Long userId = JwtHelper.getUserId(token);
         SysUser user  = sysUserService.getById(userId);
 

@@ -1,10 +1,10 @@
 import request from '@/utils/request'
 
-export function login(data) {
+export function login(loginVo) {
   return request({
     url: '/admin/system/index/login',
     method: 'post',
-    data
+    data: loginVo
   })
 }
 

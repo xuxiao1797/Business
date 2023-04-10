@@ -33,7 +33,7 @@ public class SysMenuController {
 
 
     @ApiOperation(value = "根据角色获取菜单")
-    @GetMapping("toAssign/{roleId}")
+    @GetMapping("/toAssign/{roleId}")
     public Result toAssign(@PathVariable Long roleId) {
         List<SysMenu> list = sysMenuService.findSysMenuByRoleId(roleId);
         return Result.ok(list);
@@ -48,7 +48,7 @@ public class SysMenuController {
 
 
     @ApiOperation("菜单列表")
-    @GetMapping("findNodes")
+    @GetMapping("/findNodes")
     public Result findNodes(){
         List<SysMenu> list = sysMenuService.findNodes();
         return Result.ok(list);
@@ -70,7 +70,7 @@ public class SysMenuController {
     }
 
     @ApiOperation(value = "删除菜单")
-    @DeleteMapping("remove/{id}")
+    @DeleteMapping("/remove/{id}")
     public Result remove(@PathVariable Long id) {
         sysMenuService.removeMenuById(id);
         return Result.ok();
