@@ -1,7 +1,11 @@
 package org.example.security.filter;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import jwt.JwtHelper;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -14,11 +18,17 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-    public TokenAuthenticationFilter() {
 
+    private RedisTemplate redisTemplate;
+
+    public TokenAuthenticationFilter(RedisTemplate redisTemplate) {
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -45,14 +55,23 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         String token = request.getHeader("token");
         logger.info("token:"+token);
         if (!StringUtils.isEmpty(token)) {
-            String useruame = JwtHelper.getUsername(token);
-            logger.info("useruame:"+useruame);
-            if (!StringUtils.isEmpty(useruame)) {
-                return new UsernamePasswordAuthenticationToken(useruame, null, Collections.emptyList());
+            String username = JwtHelper.getUsername(token);
+            logger.info("username:"+username);
+            if (!StringUtils.isEmpty(username)) {
+               String authString = (String) redisTemplate.opsForValue().get(username);
+               if(!StringUtils.isEmpty(authString)){
+                  List<Map> mapList = JSON.parseArray(authString,Map.class);
+                   List<SimpleGrantedAuthority> list = new ArrayList<>();
+                   for(Map map:mapList){
+                       String authority = (String) map.get("authority");
+                       list.add(new SimpleGrantedAuthority(authority));
+                   }
+                   return new UsernamePasswordAuthenticationToken(username, null, list);
+               }else {
+                   return new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>());
+               }
             }
         }
         return null;
     }
-
-
 }

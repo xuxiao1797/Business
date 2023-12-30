@@ -15,6 +15,10 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 import hasBtnPermission from '@/utils/btn-permission'
+import formCreate from '@form-create/element-ui'
+import FcDesigner from '@form-create/designer'
+Vue.use(formCreate)
+Vue.use(FcDesigner)
 Vue.prototype.$hasBP = hasBtnPermission
 
 /**
